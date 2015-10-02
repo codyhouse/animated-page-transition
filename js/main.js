@@ -1,5 +1,6 @@
 jQuery(document).ready(function(event){
   var isAnimating = false,
+    newLocation = '';
     firstLoad = false;
   
   //trigger smooth transition from the actual page to the new one 
@@ -22,7 +23,8 @@ jQuery(document).ready(function(event){
       var newPageArray = location.pathname.split('/'),
         //this is the url of the page to be loaded 
         newPage = newPageArray[newPageArray.length - 1];
-      if( !isAnimating ) changePage(newPage, false);
+
+      if( !isAnimating  &&  newLocation != newPage ) changePage(newPage, false);
     }
     firstLoad = true;
 	});
@@ -33,10 +35,14 @@ jQuery(document).ready(function(event){
     $('body').addClass('page-is-changing');
     $('.cd-loading-bar').one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(){
     	loadNewContent(url, bool);
+      newLocation = url;
       $('.cd-loading-bar').off('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend');
     });
     //if browser doesn't support CSS transitions
-    if( !transitionsSupported() ) loadNewContent(url, bool);
+    if( !transitionsSupported() ) {
+      loadNewContent(url, bool);
+      newLocation = url;
+    }
 	}
 
 	function loadNewContent(url, bool) {
